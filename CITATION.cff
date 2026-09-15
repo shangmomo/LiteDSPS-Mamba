@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the accompanying manuscript."
+title: "LiteDSPS-Mamba: Decoupling Behavioral Evidence from Temporal Computation for Long-Form Audio-Visual Depression Detection"
+type: software
+authors:
+  - family-names: Shang
+    given-names: Yongzheng
+  - family-names: Wang
+    given-names: Junjie
+  - family-names: Xue
+    given-names: Nian
+  - family-names: Cui
+    given-names: Yukun
+  - family-names: Wang
+    given-names: Lisheng
+  - family-names: Cao
+    given-names: Junyuan
+  - family-names: Li
+    given-names: Zhen
+  - family-names: Wang
+    given-names: Zhiqiang
+version: 0.1.0
+date-released: 2026-09-15
