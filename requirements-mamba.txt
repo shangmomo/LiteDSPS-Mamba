@@ -1,0 +1,3 @@
+-r requirements.txt
+mamba-ssm>=2.2.2
+causal-conv1d>=1.4.0
