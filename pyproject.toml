@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "litedsps-mamba"
+version = "0.1.0"
+description = "LiteDSPS-Mamba reference implementation for long-form audio-visual depression detection"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+  "torch>=2.2",
+  "numpy>=1.24",
+  "PyYAML>=6.0",
+]
+
+[tool.setuptools.packages.find]
+include = ["litedsps*"]
