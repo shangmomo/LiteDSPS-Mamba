@@ -1,0 +1,31 @@
+data:
+  mode: raw
+  manifest: data/dvlog/manifest.csv
+  normalization: data/dvlog/normalization.pt
+  cached_manifest: data/dvlog/evidence_cache/manifest_cached.csv
+model:
+  visual_dim: 136
+  audio_dim: 25
+  k: 96
+  embed_dim: 128
+  dynamic_dim: 96
+  d_state: 32
+  d_conv: 4
+  expand: 2
+  dropout: 0.30
+  num_classes: 2
+  share_modalities: true
+  share_directions: true
+  bidirectional: true
+  aggregation: mean_max
+  use_dynamic_diff: true
+  evidence_mode: full
+  temporal_backend: mamba2
+training:
+  batch_size: 16
+  epochs: 70
+  lr: 5.0e-5
+  weight_decay: 5.0e-3
+  lr_factor: 0.6
+  lr_patience: 5
+  num_workers: 4
