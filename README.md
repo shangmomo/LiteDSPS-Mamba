@@ -4,11 +4,33 @@ Reference implementation for **“LiteDSPS-Mamba: Decoupling Behavioral Evidence
 
 LiteDSPS-Mamba reduces learned temporal computation before Mamba2 by converting complete facial/acoustic streams into a fixed budget of ordered behavioral-evidence tokens. It then applies Mamba2 only to a partial-width dynamic subspace, while a bypass subspace retains direct projected evidence. The temporal operator is shared across modalities and scan directions.
 
-> This repository is reconstructed from the manuscript specification. Dataset files are not redistributed. Use the released D-Vlog/LMVD features according to their original licenses and access conditions.
+This repository contains the original R5 direction-shared experiment script used for the LiteDSPS-Mamba model, together with a modular implementation for easier inspection and reuse. Dataset files are not redistributed; use the released D-Vlog/LMVD features according to their original licenses and access conditions.
+
+## Original experiment code
+
+The exact original R5 experiment source provided for the paper is preserved in:
+
+```text
+experiments/original/LiteDSPS_Mamba_R5_DirShare_Deterministic_Final_20260916.zip
+```
+
+The archive contains:
+
+```text
+LiteDSPS_Mamba_R5_DirShare_Deterministic_Final(20260916-004726).py
+```
+
+Raw-script SHA-256:
+
+```text
+efc05bb4613bb27a2a5bf1c1f09707fd9bc8934bfdf02fefbd18c443a812ee48
+```
+
+The modular implementation under `litedsps/` follows the same main-model evidence construction and architecture. In particular, the first-order difference sequence has length `T-1` and is independently adaptively pooled to the same effective evidence budget as the raw-feature statistics.
 
 ## Architecture
 
-For each modality, an input sequence `X ∈ R^(T×d)` is reduced to `K=96` ordered regions. Each evidence token concatenates four per-feature statistics:
+For each modality, an input sequence `X ∈ R^(T×d)` is reduced to `K=96` ordered evidence positions. Each evidence token concatenates four per-feature statistics:
 
 - regional mean `μ`
 - `log1p(std)` dispersion
@@ -44,6 +66,9 @@ Default paper settings:
 
 ```text
 LiteDSPS-Mamba/
+├── experiments/
+│   └── original/
+│       └── LiteDSPS_Mamba_R5_DirShare_Deterministic_Final_20260916.zip
 ├── configs/
 │   ├── dvlog.yaml
 │   └── lmvd.yaml
@@ -111,7 +136,7 @@ Set `data.manifest` in `configs/dvlog.yaml` or `configs/lmvd.yaml` to the corres
 
 ### Training-set normalization
 
-The manuscript estimates normalization statistics on the training set only and fixes them for validation/test. Compute them once:
+The experiment estimates normalization statistics on the training set only and fixes them for validation/test. Compute them once:
 
 ```bash
 python compute_normalization.py \
@@ -187,7 +212,7 @@ python evaluate.py \
 
 ## Controlled ablations
 
-The principal ablations can be reproduced by editing the `model` section of a config:
+The modular implementation exposes the following structural/representation ablations by editing the `model` section of a config:
 
 | Ablation | Config change |
 |---|---|
@@ -201,6 +226,8 @@ The principal ablations can be reproduced by editing the `model` section of a co
 
 `AvgPool-96` keeps the same `4d` projector input width: the regional mean occupies the first statistic slot and the remaining three slots are zeroed.
 
+The archived R5 script is the final direction-shared main-model training script. Separate control experiments such as Evidence-only, GRU, and Mamba no-bypass are not contained in that single R5 script and should be released with their corresponding experiment scripts if those controls are intended to be directly reproduced from the repository.
+
 ## Profiling
 
 A CUDA profiling helper is included for end-to-end LiteDSPS inference:
@@ -213,7 +240,7 @@ The manuscript's comparison against CAF-Mamba used the same wrapper/environment 
 
 ## Notes on evidence construction
 
-The manuscript defines first-order changes before temporal reduction. In this reference implementation, a zero change is prepended at the first time step so change statistics use the same contiguous ordered-region boundaries as the raw features. This convention does not introduce future information and keeps `K_m = min(T_m, K)` valid regions for short sequences.
+For a sequence of length `T`, raw-feature mean/dispersion statistics are adaptively pooled to `K_m = min(T, K)` positions. For `T>1`, first-order absolute differences form a separate length-`(T-1)` sequence and are independently adaptively average/max pooled to the same `K_m` positions. For `T=1`, the difference statistics are zero. This matches the original R5 experiment script and the paper's evidence definition.
 
 ## Citation
 
